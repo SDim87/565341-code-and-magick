@@ -7,7 +7,6 @@ var CLOUD_Y = 10;
 var GAP = 10;
 var PADDING = 30;
 var FONT_GAP = 16;
-// var TEXT_WIDTH = 50;
 var BAR_HEIGHT = 150;
 var BAR_WIDTH = 40;
 var BAR_GAP = 50;
@@ -15,6 +14,8 @@ var WHITE = '#fff';
 var BLACK = '#000';
 var SHADOW = 'rgba(0, 0, 0, 0.7)';
 var RED = 'rgba(255, 0, 0, 1)';
+var minOpacity = 0.3;
+var maxOpacity = 0.9;
 
 var renderCloud = function (ctx, x, y, color) {
   ctx.fillStyle = color;
@@ -29,12 +30,14 @@ var getMaxElement = function (arr) {
       maxElement = arr[i];
     }
   }
+
   return maxElement;
 };
 
-var getRandomOpacity = function () {
-  var opacity = Math.random();
-  return 'rgba(24, 24, 140, ' + opacity + ')';
+var getRandomOpacity = function (min, max) {
+  var opacity = Math.random() * (max - min) + min;
+
+  return 'rgba(0, 0, 255, ' + opacity + ')';
 };
 
 window.renderStatistics = function (ctx, names, times) {
@@ -48,20 +51,16 @@ window.renderStatistics = function (ctx, names, times) {
 
   var maxTime = getMaxElement(times);
 
-  // for (var i = 0; i < 1; i++) {
-  //   ctx.fillText(names[i], CLOUD_X + GAP, CLOUD_Y + GAP + FONT_GAP + (GAP + BAR_HEIGHT) * i);
-  //   ctx.fillRect(CLOUD_X + GAP + TEXT_WIDTH, CLOUD_Y + GAP + (GAP + BAR_HEIGHT) * i, (BAR_WIDTH * times[i]) / maxTime, BAR_HEIGHT);
-  // }
-
   for (var j = 0; j < names.length; j++) {
-    ctx.fillText(names[j], CLOUD_X + GAP + PADDING + (BAR_WIDTH + BAR_GAP) * j, CLOUD_HEIGHT - GAP);
-    ctx.fillText(Math.round(times[j]), CLOUD_X + GAP + PADDING + (BAR_WIDTH + BAR_GAP) * j, CLOUD_HEIGHT - PADDING - GAP - ((BAR_HEIGHT * times[j]) / maxTime));
-    ctx.fillRect(CLOUD_X + GAP + PADDING + (BAR_WIDTH + BAR_GAP) * j, CLOUD_HEIGHT - PADDING - ((BAR_HEIGHT * times[j]) / maxTime), BAR_WIDTH, (BAR_HEIGHT * times[j]) / maxTime);
 
     if (names[j] === 'Вы') {
       ctx.fillStyle = RED;
     } else {
-      ctx.fillStyle = getRandomOpacity();
+      ctx.fillStyle = getRandomOpacity(minOpacity, maxOpacity);
     }
+
+    ctx.fillText(names[j], CLOUD_X + GAP + PADDING + (BAR_WIDTH + BAR_GAP) * j, CLOUD_HEIGHT - GAP);
+    ctx.fillText(Math.round(times[j]), CLOUD_X + GAP + PADDING + (BAR_WIDTH + BAR_GAP) * j, CLOUD_HEIGHT - PADDING - GAP - ((BAR_HEIGHT * times[j]) / maxTime));
+    ctx.fillRect(CLOUD_X + GAP + PADDING + (BAR_WIDTH + BAR_GAP) * j, CLOUD_HEIGHT - PADDING - ((BAR_HEIGHT * times[j]) / maxTime), BAR_WIDTH, (BAR_HEIGHT * times[j]) / maxTime);
   }
 };
